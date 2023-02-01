@@ -1,12 +1,12 @@
 {
-    "name": "@wharfkit/ui-plugin-template",
+    "name": "@wharfkit/console-renderer",
     "description": "A template to create user interfaces for use with @wharfkit/session.",
     "version": "0.1.0",
     "homepage": "https://github.com/wharfkit/ui-plugin-template",
     "license": "BSD-3-Clause",
-    "main": "lib/ui-plugin-template.js",
-    "module": "lib/ui-plugin-template.m.js",
-    "types": "lib/ui-plugin-template.d.ts",
+    "main": "lib/console-renderer.js",
+    "module": "lib/console-renderer.m.js",
+    "types": "lib/console-renderer.d.ts",
     "sideEffects": false,
     "files": [
         "lib/*",
@@ -16,8 +16,14 @@
         "prepare": "make"
     },
     "dependencies": {
+        "@types/commander": "^2.12.2",
         "@wharfkit/session": "^0.3.0-ui-5",
+        "commander": "^10.0.0",
+        "prompts": "^2.4.2",
         "tslib": "^2.1.0"
+    },
+    "bin": {
+        "wharf": "cli.js"
     },
     "devDependencies": {
         "@rollup/plugin-alias": "^3.1.4",
