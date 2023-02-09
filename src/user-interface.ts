@@ -15,6 +15,7 @@ export class ConsoleUserInterface implements UserInterface {
          *
          * Prepare any UI elements required for the login process.
          */
+        console.log('Initiating login...')
     }
 
     /**
@@ -39,6 +40,8 @@ export class ConsoleUserInterface implements UserInterface {
          *
          * Prepare any UI elements required for the transact process.
          */
+
+        console.log('Initiating transaction...')
     }
 
     /**
@@ -133,6 +136,7 @@ export class ConsoleUserInterface implements UserInterface {
                 })),
             },
         ])
+
         return Checksum256.from(chain)
     }
 

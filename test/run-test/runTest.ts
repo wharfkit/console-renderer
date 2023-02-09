@@ -31,7 +31,14 @@ export const runTest = async () => {
 
     console.log('Starting transact test.. Transfering 0.0001 EOS.')
 
-    session.transact({})
+    session.transact({
+        account: 'eosio',
+        action: 'transfer',
+        data: {
+            to: 'teamgreymass',
+            amount: '0.0001',
+        },
+    })
 
     console.log('Transfer successful!')
 }

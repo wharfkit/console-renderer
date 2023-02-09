@@ -12,13 +12,4 @@ export default [
         },
         plugins: [typescript({target: 'es6'})],
     },
-    {
-        input: './test/run-test/runTest.ts',
-        output: {
-            file: 'test/run-test/lib/run-test.m.js',
-            format: 'esm',
-            sourcemap: true,
-        },
-        plugins: [typescript({target: 'es2020'})],
-    },
 ]
