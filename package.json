@@ -13,17 +13,14 @@
         "src/*"
     ],
     "scripts": {
-        "prepare": "make"
+        "prepare": "make",
+        "run-test": "make run-test"
     },
     "dependencies": {
         "@types/commander": "^2.12.2",
         "@wharfkit/session": "^0.3.0-ui-5",
-        "commander": "^10.0.0",
         "prompts": "^2.4.2",
         "tslib": "^2.1.0"
-    },
-    "bin": {
-        "wharf": "cli.js"
     },
     "devDependencies": {
         "@rollup/plugin-alias": "^3.1.4",

@@ -1,4 +1,4 @@
-import prompts from 'prompts'
+import * as prompts from 'prompts'
 
 import {Checksum256, PermissionLevel} from '@greymass/eosio'
 import {UserInterface, LoginOptions, TransactContext, LoginContext} from '@wharfkit/session'

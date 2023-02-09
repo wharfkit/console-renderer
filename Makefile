@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 SRC_FILES := $(shell find src -name '*.ts')
-TEST_FILES := $(shell find test/tests -name '*.ts')
+TEST_FILES := commands.ts
 BIN := ./node_modules/.bin
 MOCHA_OPTS := -u tdd -r ts-node/register -r tsconfig-paths/register --extension ts
 NYC_OPTS := --temp-dir build/nyc_output --report-dir build/coverage
@@ -12,6 +12,9 @@ lib: ${SRC_FILES} package.json tsconfig.json node_modules rollup.config.js
 test: node_modules
 	@TS_NODE_PROJECT='./test/tsconfig.json' \
 		${BIN}/mocha ${MOCHA_OPTS} ${TEST_FILES} --grep '$(grep)'
+
+run-test: TEST_FILES
+	node ./test/run-test
 
 build/coverage: ${SRC_FILES} ${TEST_FILES} node_modules
 	@TS_NODE_PROJECT='./test/tsconfig.json' \
@@ -71,6 +74,9 @@ browser-test: test/browser.html
 
 node_modules:
 	yarn install --non-interactive --frozen-lockfile --ignore-scripts
+
+TEST_FILES:
+	@${BIN}/rollup -c test/run-test/rollup.config.js
 
 .PHONY: clean
 clean:
