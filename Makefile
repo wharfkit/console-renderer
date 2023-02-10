@@ -19,7 +19,7 @@ test-cli: lib TEST_CLI_FILES
 	node ./test/test-cli
 
 build/coverage: ${SRC_FILES} ${TEST_FILES} node_modules
-	@TS_NODE_PROJECT='./tsconfig.json' \
+	@TS_NODE_PROJECT='./test/tsconfig.json' \
 		${BIN}/nyc ${NYC_OPTS} --reporter=html \
 		${BIN}/mocha ${MOCHA_OPTS} -R nyan ${TEST_FILES}
 
@@ -29,7 +29,7 @@ coverage: build/coverage
 
 .PHONY: ci-test
 ci-test: node_modules
-	@TS_NODE_PROJECT='./tsconfig.json' \
+	@TS_NODE_PROJECT='./test/tsconfig.json' \
 		${BIN}/nyc ${NYC_OPTS} --reporter=text \
 		${BIN}/mocha ${MOCHA_OPTS} -R list ${TEST_FILES}
 
