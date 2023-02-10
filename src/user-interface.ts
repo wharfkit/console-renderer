@@ -1,6 +1,7 @@
 import {Checksum256, PermissionLevel} from '@greymass/eosio'
-import {UserInterface, LoginOptions, TransactContext, LoginContext} from '@wharfkit/session'
+import {LoginContext, UserInterface} from '@wharfkit/session'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const prompts = require('prompts')
 
 export class ConsoleUserInterface implements UserInterface {
@@ -9,7 +10,7 @@ export class ConsoleUserInterface implements UserInterface {
      *
      * @param options LoginOptions
      */
-    async onLogin(options?: LoginOptions): Promise<void> {
+    async onLogin(): Promise<void> {
         /**
          * A login call has been initiated.
          *
@@ -34,7 +35,7 @@ export class ConsoleUserInterface implements UserInterface {
      *
      * @param context TransactContext
      */
-    async onTransact(context: TransactContext): Promise<void> {
+    async onTransact(): Promise<void> {
         /**
          * A transact call has been initiated.
          *
@@ -76,7 +77,7 @@ export class ConsoleUserInterface implements UserInterface {
      * @param context LoginContext
      * @returns Promise<PermissionLevel>
      */
-    async onSelectPermissionLevel(context: LoginContext): Promise<PermissionLevel> {
+    async onSelectPermissionLevel(): Promise<PermissionLevel> {
         /**
          * Present the user with an interface to select a permission level to use for the session.
          *
@@ -161,7 +162,7 @@ export class ConsoleUserInterface implements UserInterface {
                 type: 'select',
                 name: 'wallet',
                 message: 'Please enter the chain name',
-                choices: context.walletPlugins.map((wallet, index) => ({
+                choices: context.walletPlugins.map((wallet) => ({
                     title: wallet.name,
                 })),
             },
