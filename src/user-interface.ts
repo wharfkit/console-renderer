@@ -1,7 +1,7 @@
-import * as prompts from 'prompts'
-
 import {Checksum256, PermissionLevel} from '@greymass/eosio'
 import {UserInterface, LoginOptions, TransactContext, LoginContext} from '@wharfkit/session'
+
+const prompts = require('prompts')
 
 export class ConsoleUserInterface implements UserInterface {
     /**
@@ -93,7 +93,7 @@ export class ConsoleUserInterface implements UserInterface {
          * the permission level directly from the wallet.
          */
 
-        const {name, permission} = await prompts([
+        const {name, permission} = await (prompts as any)([
             {
                 type: 'text',
                 name: 'name',

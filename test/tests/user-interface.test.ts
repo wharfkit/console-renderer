@@ -1,8 +1,7 @@
 import * as sinon from 'sinon'
 import {PermissionLevel, Checksum256} from '@greymass/eosio'
 
-const EOSChainId = 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
-const JungleChainId = '2a02a0053e5a8cf73a56ba0fda11e4d92e0238a4a2aa74fccf46d5a910746840'
+import {mockChainId, secondMockChainId} from '../utils/mock-config'
 
 let promptsStub = sinon.stub()
 
@@ -14,7 +13,7 @@ require.cache[require.resolve('prompts')] = {
 } as any
 
 import {expect} from 'chai'
-import {ConsoleUserInterface} from '../src/user-interface'
+import {ConsoleUserInterface} from '../../src/user-interface'
 
 describe('ConsoleUserInterface', () => {
     let consoleStub
@@ -92,17 +91,17 @@ describe('ConsoleUserInterface', () => {
         it('should call the prompts library and return a Checksum256 instance', async () => {
             const context = {
                 chains: [
-                    {id: EOSChainId, name: 'test-chain'},
-                    {id: JungleChainId, name: 'jungle-testnet'},
+                    {id: mockChainId, name: 'test-chain'},
+                    {id: secondMockChainId, name: 'jungle-testnet'},
                 ],
             }
-            promptsStub.resolves({chain: EOSChainId})
+            promptsStub.resolves({chain: mockChainId})
 
             const chainId = await consoleUserInterface.onSelectChain(context)
 
             expect(promptsStub.called).to.be.true
             expect(chainId).to.be.an.instanceof(Checksum256)
-            expect(chainId.equals(Checksum256.from(EOSChainId))).to.be.true
+            expect(chainId.equals(Checksum256.from(mockChainId))).to.be.true
         })
     })
 

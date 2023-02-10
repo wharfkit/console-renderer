@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "isolatedModules": false,
+        "resolveJsonModule": true,
+        "experimentalDecorators": true,
+        "module": "commonjs",
+        "target": "es6",
+        "types": ["mocha", "node"],
+        "baseUrl": "..",
+        "paths": {
+            "$lib": ["src"],
+            "$test": ["test"],
+            "$test/*": ["test/*"]
+        },
+    },
+    "include": ["test/**/*.ts"]
+
+}

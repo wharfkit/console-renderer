@@ -32,4 +32,21 @@ export default [
         plugins: [typescript({target: 'es6'})],
         external,
     },
+    {
+        input: 'src/index.ts',
+        output: {
+            banner,
+            file: pkg.module,
+            format: 'esm',
+            sourcemap: true,
+        },
+        plugins: [typescript({target: 'es2020'})],
+        external,
+    },
+    {
+        input: 'src/index.ts',
+        output: {banner, file: pkg.types, format: 'esm'},
+
+        plugins: [dts()],
+    },
 ]
