@@ -1,5 +1,8 @@
 import {Checksum256, PermissionLevel} from '@greymass/eosio'
-import {LoginContext, UserInterface} from '@wharfkit/session'
+import {LoginContext, PromptArgs, PromptElement, UserInterface} from '@wharfkit/session'
+import qrcode from 'qrcode-terminal'
+
+import {countdown, printLink} from './utils'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const prompts = require('prompts')
@@ -169,5 +172,41 @@ export class ConsoleUserInterface implements UserInterface {
         ])
 
         return wallet
+    }
+
+    async onError(error: Error): Promise<void> {
+        /**
+         * An error has occurred in the session.
+         *
+         * This is a good place to display an error message to the user.
+         */
+
+        console.error(error)
+    }
+
+    prompt(args: PromptArgs): void {
+        /**
+         * Prompt the user with a yes/no question.
+         *
+         * The message to display to the user is passed in as the first argument.
+         *
+         * The return value should be a boolean indicating whether the user selected yes or no.
+         */
+
+        console.log(args.title)
+
+        console.log(args.body)
+
+        args.elements.forEach((element: PromptElement) => {
+            element.label && console.log(element.label)
+
+            if (element.type === 'qr') {
+                qrcode.generate(element.data, {small: true})
+            } else if (element.type === 'countdown') {
+                countdown()
+            } else if (element.type === 'button') {
+                printLink(element.data)
+            }
+        })
     }
 }
