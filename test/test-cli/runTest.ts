@@ -23,11 +23,11 @@ export const runTest = async () => {
 
     const {session} = await sessionKit.login()
 
-    console.log('Successfully logged you in!')
+    console.log('\nSuccessfully logged you in!')
 
-    console.log('Starting transfer test...')
+    console.log('\nStarting transfer test...')
 
     await session.transact({action: makeMockAction()})
 
-    console.log('Transfer successful!')
+    console.log('\nTransfer successful!')
 }

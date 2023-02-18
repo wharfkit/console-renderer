@@ -2,10 +2,10 @@ export function countdown(countdownTime: number = 120, interval: number = 10000)
     let remainingSeconds = countdownTime
 
     const intervalId = setInterval(() => {
+        remainingSeconds -= interval / 1000
         const minutes = Math.floor(remainingSeconds / 60)
         const seconds = remainingSeconds % 60
         console.log(`Time remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`)
-        remainingSeconds--
         if (remainingSeconds < 0) {
             clearInterval(intervalId)
             console.log('Time is up!')

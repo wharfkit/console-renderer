@@ -19,7 +19,7 @@ export class ConsoleUserInterface implements UserInterface {
          *
          * Prepare any UI elements required for the login process.
          */
-        console.log('Initiating login...')
+        console.log('\nInitiating login...\n')
     }
 
     /**
@@ -44,8 +44,6 @@ export class ConsoleUserInterface implements UserInterface {
          *
          * Prepare any UI elements required for the transact process.
          */
-
-        console.log('Initiating transaction...')
     }
 
     /**
@@ -71,7 +69,7 @@ export class ConsoleUserInterface implements UserInterface {
          * The UserInterface can decide how to surface this information to the user.
          */
 
-        console.log(message)
+        console.log(`\n${message}`)
     }
 
     /**
@@ -181,7 +179,7 @@ export class ConsoleUserInterface implements UserInterface {
          * This is a good place to display an error message to the user.
          */
 
-        console.error(error)
+        console.error(`\n${error}`)
     }
 
     prompt(args: PromptArgs): void {
@@ -198,13 +196,20 @@ export class ConsoleUserInterface implements UserInterface {
         console.log(args.body)
 
         args.elements.forEach((element: PromptElement) => {
+            console.log('')
+
             element.label && console.log(element.label)
+
+            console.log('')
 
             if (element.type === 'qr') {
                 qrcode.generate(element.data, {small: true})
             } else if (element.type === 'countdown') {
                 countdown()
             } else if (element.type === 'button') {
+                console.log(
+                    'If unable to click the link, please copy and paste the link into your browser:\n'
+                )
                 printLink(element.data)
             }
         })
