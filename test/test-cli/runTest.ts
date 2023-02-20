@@ -27,7 +27,7 @@ export const runTest = async () => {
 
     console.log('\nStarting transfer test...')
 
-    await session.transact({action: makeMockAction()})
+    await session.transact({action: makeMockAction()}, {broadcast: false})
 
     console.log('\nTransfer successful!')
 }
