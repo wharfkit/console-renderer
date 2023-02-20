@@ -191,26 +191,26 @@ export class ConsoleUserInterface implements UserInterface {
          * The return value should be a boolean indicating whether the user selected yes or no.
          */
 
-        console.log(args.title)
+        console.log(`\n${args.title}`)
 
-        console.log(args.body)
+        console.log(`\n${args.body}`)
 
         args.elements.forEach((element: PromptElement) => {
-            console.log('')
-
-            element.label && console.log(element.label)
-
-            console.log('')
+            if (element.label) {
+                console.log(`\n${element.label}`)
+            }
 
             if (element.type === 'qr') {
+                console.log('\n')
                 qrcode.generate(element.data, {small: true})
             } else if (element.type === 'countdown') {
-                countdown()
+                console.log({element: element?.data})
+                countdown(element?.data as string)
             } else if (element.type === 'button') {
                 console.log(
-                    'If unable to click the link, please copy and paste the link into your browser:\n'
+                    '\nIf unable to click the link, please copy and paste the link into your browser:'
                 )
-                printLink(element.data)
+                printLink(`\n${element.data}`)
             }
         })
     }
