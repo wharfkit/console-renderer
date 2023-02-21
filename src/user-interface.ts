@@ -78,7 +78,7 @@ export class ConsoleUserInterface implements UserInterface {
      * @param context LoginContext
      * @returns Promise<PermissionLevel>
      */
-    async onSelectPermissionLevel(): Promise<PermissionLevel> {
+    async onSelectPermissionLevel(context: LoginContext): Promise<PermissionLevel> {
         /**
          * Present the user with an interface to select a permission level to use for the session.
          *
