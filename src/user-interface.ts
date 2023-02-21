@@ -5,6 +5,7 @@ import {
     PromptElement,
     UserInterface,
     UserInterfaceLoginResponse,
+    UserInterfaceWalletPlugin,
 } from '@wharfkit/session'
 import qrcode from 'qrcode-terminal'
 
@@ -17,8 +18,9 @@ export class ConsoleUserInterface implements UserInterface {
     async login(context: LoginContext): Promise<UserInterfaceLoginResponse> {
         console.log({context: context.uiRequirements})
         const walletPluginIndex = await this.getWallet(context)
-        const chainId = await this.getChain(context)
-        const permissionLevel = await this.getPermissionLevel(context)
+        const walletPlugin = context.walletPlugins[walletPluginIndex]
+        const chainId = await this.getChain(context, walletPlugin)
+        const permissionLevel = await this.getPermissionLevel(context, walletPlugin)
 
         return {walletPluginIndex, chainId, permissionLevel}
     }
@@ -130,7 +132,17 @@ export class ConsoleUserInterface implements UserInterface {
         console.error(`\n${error}`)
     }
 
-    private async getPermissionLevel(context: LoginContext): Promise<PermissionLevel | undefined> {
+    private async getPermissionLevel(
+        context: LoginContext,
+        walletPlugin: UserInterfaceWalletPlugin
+    ): Promise<PermissionLevel | undefined> {
+        if (
+            !context.uiRequirements.requiresPermissionSelect ||
+            !walletPlugin.config.requiresPermissionSelect
+        ) {
+            return
+        }
+
         if (!context.uiRequirements.requiresPermissionSelect) {
             return
         }
@@ -152,8 +164,14 @@ export class ConsoleUserInterface implements UserInterface {
         return PermissionLevel.from(`${name}@${permission}`)
     }
 
-    private async getChain(context: LoginContext): Promise<Checksum256 | undefined> {
-        if (!context.uiRequirements.requiresChainSelect) {
+    private async getChain(
+        context: LoginContext,
+        walletPlugin: UserInterfaceWalletPlugin
+    ): Promise<Checksum256 | undefined> {
+        if (
+            !context.uiRequirements.requiresChainSelect ||
+            !walletPlugin.config.requiresChainSelect
+        ) {
             return
         }
 
@@ -162,10 +180,15 @@ export class ConsoleUserInterface implements UserInterface {
                 type: 'select',
                 name: 'chain',
                 message: 'Please enter the chain name',
-                choices: context.chains.map((chain) => ({
-                    title: chain.name,
-                    value: chain.id,
-                })),
+                choices: context.chains
+                    .filter((chain) => {
+                        !walletPlugin.config.supportedChains ||
+                            walletPlugin.config.supportedChains.includes(chain.id)
+                    })
+                    .map((chain) => ({
+                        title: chain.name,
+                        value: chain.id,
+                    })),
             },
         ])
 
