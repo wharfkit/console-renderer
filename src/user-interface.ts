@@ -1,5 +1,11 @@
 import {Checksum256, PermissionLevel} from '@greymass/eosio'
-import {LoginContext, PromptArgs, PromptElement, UserInterface} from '@wharfkit/session'
+import {
+    LoginContext,
+    PromptArgs,
+    PromptElement,
+    UserInterface,
+    UserInterfaceLoginResponse,
+} from '@wharfkit/session'
 import qrcode from 'qrcode-terminal'
 
 import {countdown, printLink} from './utils'
@@ -8,6 +14,15 @@ import {countdown, printLink} from './utils'
 const prompts = require('prompts')
 
 export class ConsoleUserInterface implements UserInterface {
+    async login(context: LoginContext): Promise<UserInterfaceLoginResponse> {
+        console.log({context: context.uiRequirements})
+        const walletPluginIndex = await this.getWallet(context)
+        const chainId = await this.getChain(context)
+        const permissionLevel = await this.getPermissionLevel(context)
+
+        return {walletPluginIndex, chainId, permissionLevel}
+    }
+
     /**
      * onLogin
      *
@@ -72,116 +87,6 @@ export class ConsoleUserInterface implements UserInterface {
         console.log(`\n${message}`)
     }
 
-    /**
-     * onSelectPermissionLevel
-     *
-     * @param context LoginContext
-     * @returns Promise<PermissionLevel>
-     */
-    async onSelectPermissionLevel(context: LoginContext): Promise<PermissionLevel> {
-        /**
-         * Present the user with an interface to select a permission level to use for the session.
-         *
-         * A basic example of how this could be done is two text inputs, one for the account name ('teamgreymass')
-         * and one for the permission ('active').
-         *
-         * The PermissionLevel object for this data should be returned below.
-         *
-         * NOTE: This isn't often used, but will be needed for user interfaces that interact directly with hardware
-         * wallets like Ledger. When using a Ledger directly, the user interface should be able to retrieve the public
-         * key from the device here, and then do account lookups to display choices.
-         *
-         * Most wallets (Anchor, Scatter, Wombat, PrivateKeyPlugin, etc) won't use this step since they will return
-         * the permission level directly from the wallet.
-         */
-
-        const {name, permission} = await (prompts as any)([
-            {
-                type: 'text',
-                name: 'name',
-                message: 'Please enter the account name',
-            },
-            {
-                type: 'text',
-                name: 'permission',
-                message: 'Please enter the permission',
-                default: 'active',
-            },
-        ])
-
-        return PermissionLevel.from(`${name}@${permission}`)
-    }
-
-    /**
-     * onSelectChain
-     *
-     * @param context LoginContext
-     * @returns Promise<Checksum256>
-     */
-    async onSelectChain(context: LoginContext): Promise<Checksum256> {
-        /**
-         * Present the user with an interface to select one of the blockchains from the config.
-         *
-         * An array of available chains can be found in the `context.chains` array.
-         *
-         * The chainId (a Checksum256 value) of the selected chain should be returned.
-         */
-
-        const {chain} = await prompts([
-            {
-                type: 'select',
-                name: 'chain',
-                message: 'Please enter the chain name',
-                choices: context.chains.map((chain) => ({
-                    title: chain.name,
-                    value: chain.id,
-                })),
-            },
-        ])
-
-        return Checksum256.from(chain)
-    }
-
-    /**
-     * onSelectWallet
-     *
-     * @param context LoginContext
-     * @returns Promise<number>
-     */
-    async onSelectWallet(context: LoginContext): Promise<number> {
-        /**
-         * Present the user with an interface to select one of the walletPlugins from the config.
-         *
-         * An array of the metadata about WalletPlugins is available in `context.walletPlugins`
-         * which can be used to display options.
-         *
-         * The index in the array of the wallet selected by the user should be returned below.
-         */
-
-        const {wallet} = await prompts([
-            {
-                type: 'select',
-                name: 'wallet',
-                message: 'Please enter the chain name',
-                choices: context.walletPlugins.map((wallet) => ({
-                    title: wallet.name,
-                })),
-            },
-        ])
-
-        return wallet
-    }
-
-    async onError(error: Error): Promise<void> {
-        /**
-         * An error has occurred in the session.
-         *
-         * This is a good place to display an error message to the user.
-         */
-
-        console.error(`\n${error}`)
-    }
-
     prompt(args: PromptArgs): void {
         /**
          * Prompt the user with a yes/no question.
@@ -213,5 +118,76 @@ export class ConsoleUserInterface implements UserInterface {
                 printLink(`\n${element.data}`)
             }
         })
+    }
+
+    async onError(error: Error): Promise<void> {
+        /**
+         * An error has occurred in the session.
+         *
+         * This is a good place to display an error message to the user.
+         */
+
+        console.error(`\n${error}`)
+    }
+
+    private async getPermissionLevel(context: LoginContext): Promise<PermissionLevel | undefined> {
+        if (!context.uiRequirements.requiresPermissionSelect) {
+            return
+        }
+
+        const {name, permission} = await (prompts as any)([
+            {
+                type: 'text',
+                name: 'name',
+                message: 'Please enter the account name',
+            },
+            {
+                type: 'text',
+                name: 'permission',
+                message: 'Please enter the permission',
+                default: 'active',
+            },
+        ])
+
+        return PermissionLevel.from(`${name}@${permission}`)
+    }
+
+    private async getChain(context: LoginContext): Promise<Checksum256 | undefined> {
+        if (!context.uiRequirements.requiresChainSelect) {
+            return
+        }
+
+        const {chain} = await prompts([
+            {
+                type: 'select',
+                name: 'chain',
+                message: 'Please enter the chain name',
+                choices: context.chains.map((chain) => ({
+                    title: chain.name,
+                    value: chain.id,
+                })),
+            },
+        ])
+
+        return Checksum256.from(chain)
+    }
+
+    private async getWallet(context: LoginContext): Promise<number> {
+        if (context.uiRequirements.requiresWalletSelect) {
+            return 0
+        }
+
+        const {wallet} = await prompts([
+            {
+                type: 'select',
+                name: 'wallet',
+                message: 'Please enter the chain name',
+                choices: context.walletPlugins.map((wallet) => ({
+                    title: wallet.metadata.name,
+                })),
+            },
+        ])
+
+        return wallet
     }
 }

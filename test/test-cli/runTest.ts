@@ -6,6 +6,8 @@ import {makeMockAction} from '../utils/mock-actions'
 
 const {ConsoleUserInterface} = require('../../../lib/console-renderer')
 
+let walletData = {}
+
 const sessionKit = new SessionKit({
     appName: 'wharf console app',
     chains: [
@@ -16,6 +18,25 @@ const sessionKit = new SessionKit({
     ],
     walletPlugins: [new WalletPluginAnchor()],
     ui: new ConsoleUserInterface(),
+    storage: {
+        write(key: string, data: string): Promise<void> {
+            walletData[key] = data
+
+            return Promise.resolve()
+        },
+        read(key: string): Promise<string | null> {
+            if (walletData[key]) {
+                return Promise.resolve(walletData[key])
+            } else {
+                return Promise.resolve(null)
+            }
+        },
+        remove(key: string): Promise<void> {
+            delete walletData[key]
+
+            return Promise.resolve()
+        },
+    },
 })
 
 export const runTest = async () => {

@@ -614,10 +614,8 @@
   dependencies:
     "@greymass/buoy" "^1.0.3"
     "@greymass/miniaes" "^1.0.0"
-    eosio-signing-request "^2.5.2"
     isomorphic-ws "^5.0.0"
     pako "^2.0.4"
-    tslib "^2.1.0"
     uuid "^8.3.2"
 
 acorn-jsx@^5.3.2:
