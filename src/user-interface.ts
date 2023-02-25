@@ -1,12 +1,16 @@
 import {Checksum256, PermissionLevel} from '@greymass/eosio'
 import {
+    cancelable,
+    Cancelable,
     LoginContext,
     PromptArgs,
     PromptElement,
     UserInterface,
     UserInterfaceLoginResponse,
     UserInterfaceWalletPlugin,
+    PromptResponse,
 } from '@wharfkit/session'
+import {resolve} from 'path'
 import qrcode from 'qrcode-terminal'
 
 import {countdown, printLink} from './utils'
@@ -16,7 +20,6 @@ const prompts = require('prompts')
 
 export class ConsoleUserInterface implements UserInterface {
     async login(context: LoginContext): Promise<UserInterfaceLoginResponse> {
-        console.log({context: context.uiRequirements})
         const walletPluginIndex = await this.getWallet(context)
         const walletPlugin = context.walletPlugins[walletPluginIndex]
         const chainId = await this.getChain(context, walletPlugin)
@@ -89,7 +92,7 @@ export class ConsoleUserInterface implements UserInterface {
         console.log(`\n${message}`)
     }
 
-    prompt(args: PromptArgs): void {
+    prompt(args: PromptArgs): Cancelable<PromptResponse> {
         /**
          * Prompt the user with a yes/no question.
          *
@@ -102,6 +105,8 @@ export class ConsoleUserInterface implements UserInterface {
 
         console.log(`\n${args.body}`)
 
+        const onEndCallbacks: (() => void)[] = []
+
         args.elements.forEach((element: PromptElement) => {
             if (element.label) {
                 console.log(`\n${element.label}`)
@@ -111,8 +116,8 @@ export class ConsoleUserInterface implements UserInterface {
                 console.log('\n')
                 qrcode.generate(element.data, {small: true})
             } else if (element.type === 'countdown') {
-                console.log({element: element?.data})
-                countdown(element?.data as string)
+                const onEndCallback = countdown(element?.data as string)
+                onEndCallbacks.push(onEndCallback)
             } else if (element.type === 'button') {
                 console.log(
                     '\nIf unable to click the link, please copy and paste the link into your browser:'
@@ -120,6 +125,16 @@ export class ConsoleUserInterface implements UserInterface {
                 printLink(`\n${element.data}`)
             }
         })
+
+        return cancelable(
+            new Promise(() => {
+                // Promise that never resolves
+            }),
+            () => {
+                // Cancel callback
+                onEndCallbacks.forEach((callback) => callback())
+            }
+        )
     }
 
     async onError(error: Error): Promise<void> {

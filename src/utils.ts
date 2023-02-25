@@ -4,6 +4,11 @@ export function countdown(expirationTimeString?: string, interval: number = 1000
         : Date.now() + 120000
     const startTime = Date.now()
     const remainingTime = expirationTime - startTime
+    const remainingSeconds = Math.ceil(remainingTime) / 1000
+
+    const minutes = Math.floor(remainingSeconds / 60)
+    const seconds = remainingSeconds % 60
+    console.log(`\nTime remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`)
 
     const intervalId = setInterval(() => {
         const elapsedTime = Date.now() - startTime
@@ -20,6 +25,8 @@ export function countdown(expirationTimeString?: string, interval: number = 1000
         const seconds = remainingSeconds % 60
         console.log(`\nTime remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`)
     }, interval)
+
+    return () => clearInterval(intervalId)
 }
 
 export function printLink(url) {

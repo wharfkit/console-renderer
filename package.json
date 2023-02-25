@@ -16,7 +16,6 @@
         "prepare": "make"
     },
     "dependencies": {
-        "@greymass/eosio": "0.6.9",
         "@wharfkit/session": "../session",
         "@wharfkit/wallet-plugin-anchor": "../wallet-plugin-anchor",
         "prompts": "^2.4.2",
