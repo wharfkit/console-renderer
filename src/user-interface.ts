@@ -5,12 +5,12 @@ import {
     LoginContext,
     PromptArgs,
     PromptElement,
+    PromptResponse,
     UserInterface,
     UserInterfaceLoginResponse,
+    UserInterfaceTranslateFunction,
     UserInterfaceWalletPlugin,
-    PromptResponse,
 } from '@wharfkit/session'
-import {resolve} from 'path'
 import qrcode from 'qrcode-terminal'
 
 import {countdown, printLink} from './utils'
@@ -26,6 +26,44 @@ export class ConsoleUserInterface implements UserInterface {
         const permissionLevel = await this.getPermissionLevel(context, walletPlugin)
 
         return {walletPluginIndex, chainId, permissionLevel}
+    }
+
+    async onTransactComplete(): Promise<void> {
+        return Promise.resolve()
+    }
+
+    async onLoginComplete(): Promise<void> {
+        return Promise.resolve()
+    }
+
+    async onSignComplete(): Promise<void> {
+        return Promise.resolve()
+    }
+
+    async onBroadcastComplete(): Promise<void> {
+        return Promise.resolve()
+    }
+
+    async onSign(): Promise<void> {
+        return Promise.resolve()
+    }
+
+    async onBroadcast(): Promise<void> {
+        return Promise.resolve()
+    }
+
+    translate(): string {
+        return ''
+    }
+
+    getTranslate(): UserInterfaceTranslateFunction {
+        return () => {
+            return ''
+        }
+    }
+
+    addTranslations(): void {
+        return
     }
 
     /**
@@ -158,10 +196,6 @@ export class ConsoleUserInterface implements UserInterface {
             return
         }
 
-        if (!context.uiRequirements.requiresPermissionSelect) {
-            return
-        }
-
         const {name, permission} = await (prompts as any)([
             {
                 type: 'text',
@@ -211,7 +245,7 @@ export class ConsoleUserInterface implements UserInterface {
     }
 
     private async getWallet(context: LoginContext): Promise<number> {
-        if (context.uiRequirements.requiresWalletSelect) {
+        if (!context.uiRequirements.requiresWalletSelect) {
             return 0
         }
 

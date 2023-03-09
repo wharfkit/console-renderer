@@ -16,8 +16,8 @@
         "prepare": "make"
     },
     "dependencies": {
-        "@wharfkit/session": "../session",
-        "@wharfkit/wallet-plugin-anchor": "../wallet-plugin-anchor",
+        "@wharfkit/session": "0.3.1",
+        "@wharfkit/wallet-plugin-anchor": "0.3.1",
         "prompts": "^2.4.2",
         "qrcode-terminal": "^0.12.0",
         "tslib": "^2.1.0"

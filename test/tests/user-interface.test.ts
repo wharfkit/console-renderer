@@ -31,89 +31,86 @@ describe('ConsoleUserInterface', () => {
 
     describe('onLogin', () => {
         it('should log that a login is initiated', async () => {
-            consoleUserInterface.onLogin()
+            await consoleUserInterface.onLogin()
 
-            expect(consoleStub.calledWith('Initiating login...')).to.be.true
-        })
-
-        describe('onLoginResult', () => {
-            it('should not raise an error', async () => {
-                try {
-                    await consoleUserInterface.onLoginResult()
-                } catch (error) {
-                    expect.fail(`An error was raised: ${error}`)
-                }
-            })
-        })
-
-        describe('onTransact', () => {
-            it('should log that a transaction is initiated', async () => {
-                consoleUserInterface.onTransact()
-
-                expect(consoleStub.calledWith('Initiating transaction...')).to.be.true
-            })
-        })
-
-        describe('onTransactResult', () => {
-            it('should not raise an error', async () => {
-                try {
-                    await consoleUserInterface.onTransactResult()
-                } catch (error) {
-                    expect.fail(`An error was raised: ${error}`)
-                }
-            })
-        })
-
-        describe('status', () => {
-            it('should call console.log with the message', () => {
-                const message = 'test message'
-
-                consoleUserInterface.status(message)
-
-                expect(consoleStub.calledWith(message)).to.be.true
-            })
+            expect(consoleStub.calledWith('\nInitiating login...\n')).to.be.true
         })
     })
 
-    describe('onSelectPermissionLevel', () => {
+    describe('onLoginResult', () => {
+        it('should not raise an error', async () => {
+            try {
+                await consoleUserInterface.onLoginResult()
+            } catch (error) {
+                expect.fail(`An error was raised: ${error}`)
+            }
+        })
+    })
+
+    describe('onTransactResult', () => {
+        it('should not raise an error', async () => {
+            try {
+                await consoleUserInterface.onTransactResult()
+            } catch (error) {
+                expect.fail(`An error was raised: ${error}`)
+            }
+        })
+    })
+
+    describe('status', () => {
+        it('should call console.log with the message', () => {
+            const message = 'test message'
+
+            consoleUserInterface.status(message)
+
+            expect(consoleStub.calledWith(`\n${message}`)).to.be.true
+        })
+    })
+
+    describe('login', () => {
         it('should call the prompts library and return a PermissionLevel instance', async () => {
-            const context = {}
-            promptsStub.resolves({name: 'test-account', permission: 'active'})
-
-            const permissionLevel = await consoleUserInterface.onSelectPermissionLevel(context)
-
-            expect(promptsStub.called).to.be.true
-            expect(permissionLevel).to.be.an.instanceOf(PermissionLevel)
-        })
-    })
-
-    describe('onSelectChain', () => {
-        it('should call the prompts library and return a Checksum256 instance', async () => {
             const context = {
+                uiRequirements: {
+                    requiresWalletSelect: true,
+                    requiresChainSelect: true,
+                    requiresPermissionSelect: true,
+                },
+                walletPlugins: [
+                    {
+                        metadata: {
+                            name: 'test-wallet',
+                        },
+                        config: {
+                            requiresChainSelect: true,
+                            requiresPermissionSelect: true,
+                        },
+                    },
+                ],
                 chains: [
-                    {id: mockChainId, name: 'test-chain'},
-                    {id: secondMockChainId, name: 'jungle-testnet'},
+                    {
+                        id: mockChainId,
+                    },
                 ],
             }
-            promptsStub.resolves({chain: mockChainId})
 
-            const chainId = await consoleUserInterface.onSelectChain(context)
+            promptsStub.resolves({
+                name: 'test-account',
+                permission: 'active',
+                chain: mockChainId,
+                wallet: 0,
+            })
+
+            const {walletPluginIndex, chainId, permissionLevel} = await consoleUserInterface.login(
+                context
+            )
 
             expect(promptsStub.called).to.be.true
+
+            expect(walletPluginIndex).to.equal(0)
             expect(chainId).to.be.an.instanceof(Checksum256)
             expect(chainId.equals(Checksum256.from(mockChainId))).to.be.true
-        })
-    })
-
-    describe('onSelectWallet', () => {
-        it('should call the prompts library and return the index of the selected wallet', async () => {
-            const context = {walletPlugins: [{name: 'wallet-1'}, {name: 'wallet-2'}]}
-            promptsStub.resolves({wallet: 1})
-
-            const selectedWalletIndex = await consoleUserInterface.onSelectWallet(context)
-
-            expect(promptsStub.called).to.be.true
-            expect(selectedWalletIndex).to.equal(1)
+            expect(permissionLevel).to.be.an.instanceOf(PermissionLevel)
+            expect(permissionLevel.equals(PermissionLevel.from('test-account@active'))).to.be
         })
     })
 })

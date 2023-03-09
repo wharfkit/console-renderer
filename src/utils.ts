@@ -1,4 +1,4 @@
-export function countdown(expirationTimeString?: string, interval: number = 10000) {
+export function countdown(expirationTimeString?: string, interval = 10000) {
     const expirationTime = expirationTimeString
         ? Date.parse(expirationTimeString)
         : Date.now() + 120000
