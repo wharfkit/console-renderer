@@ -12,8 +12,8 @@ const sessionKit = new SessionKit({
     appName: 'wharf console app',
     chains: [
         {
-            id: mockChainId,
-            url: mockUrl,
+            id: 'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+            url: 'https://eos.greymass.com',
         },
     ],
     walletPlugins: [new WalletPluginAnchor()],
@@ -48,7 +48,11 @@ export const runTest = async () => {
 
     console.log('\nStarting transfer test...')
 
-    await session.transact({action: makeMockAction()}, {broadcast: false})
+    const {signatures} = await session.transact({action: makeMockAction()}, {broadcast: false})
 
-    console.log('\nTransfer successful!')
+    if (signatures.length > 0) {
+        console.log('\nTransfer successful!')
+    } else {
+        console.log('\nTransfer failed!')
+    }
 }

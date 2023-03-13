@@ -156,11 +156,11 @@ export class ConsoleUserInterface implements UserInterface {
             } else if (element.type === 'countdown') {
                 const onEndCallback = countdown(element?.data as string)
                 onEndCallbacks.push(onEndCallback)
-            } else if (element.type === 'button') {
+            } else if (element.type === 'link') {
                 console.log(
                     '\nIf unable to click the link, please copy and paste the link into your browser:'
                 )
-                printLink(`\n${element.data}`)
+                printLink(`\n${(element.data as any)?.href}`)
             }
         })
 
