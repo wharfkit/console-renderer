@@ -1,8 +1,8 @@
 {
-    "extends": "../tsconfig.json",
     "compilerOptions": {
         "isolatedModules": false,
         "resolveJsonModule": true,
+        "experimentalDecorators": true,
         "module": "commonjs",
         "target": "es6",
         "types": ["mocha", "node"],
@@ -11,7 +11,7 @@
             "$lib": ["src"],
             "$test": ["test"],
             "$test/*": ["test/*"]
-        }
+        },
     },
-    "include": ["*.ts", "**/*.ts"]
+    "include": ["test/**/*.ts"]
 }

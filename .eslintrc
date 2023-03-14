@@ -9,7 +9,6 @@
     ],
     "rules": {
         "prettier/prettier": "warn",
-        "no-console": "warn",
         "sort-imports": [
             "warn",
             {
