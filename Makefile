@@ -1,17 +1,22 @@
 SHELL := /bin/bash
 SRC_FILES := $(shell find src -name '*.ts')
-TEST_FILES := $(shell find test/tests -name '*.ts')
+TEST_FILES := $(shell find test -not -path '*/test-cli/*' -name '*.ts')
+TEST_CLI_FILES := $(shell find test/test-cli -name '*.ts')
 BIN := ./node_modules/.bin
-MOCHA_OPTS := -u tdd -r ts-node/register -r tsconfig-paths/register --extension ts
+MOCHA_OPTS := -u bdd -r ts-node/register -r tsconfig-paths/register --extension ts
 NYC_OPTS := --temp-dir build/nyc_output --report-dir build/coverage
 
 lib: ${SRC_FILES} package.json tsconfig.json node_modules rollup.config.js
 	@${BIN}/rollup -c && touch lib
 
 .PHONY: test
-test: node_modules
+test: TEST_FILES node_modules 
 	@TS_NODE_PROJECT='./test/tsconfig.json' \
 		${BIN}/mocha ${MOCHA_OPTS} ${TEST_FILES} --grep '$(grep)'
+
+.PHONY: run-test
+test-cli: lib TEST_CLI_FILES
+	node ./test/test-cli
 
 build/coverage: ${SRC_FILES} ${TEST_FILES} node_modules
 	@TS_NODE_PROJECT='./test/tsconfig.json' \
@@ -71,6 +76,13 @@ browser-test: test/browser.html
 
 node_modules:
 	yarn install --non-interactive --frozen-lockfile --ignore-scripts
+
+TEST_FILES:
+	@${BIN}/rollup -c rollup.config.js
+
+TEST_CLI_FILES:
+	@TS_NODE_PROJECT='./test/tsconfig.json' \
+		${BIN}/rollup -c test/test-cli/rollup.config.js
 
 .PHONY: clean
 clean:
