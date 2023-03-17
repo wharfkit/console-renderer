@@ -29,27 +29,51 @@ export class ConsoleUserInterface implements UserInterface {
     }
 
     async onTransactComplete(): Promise<void> {
-        return Promise.resolve()
+        /**
+         *
+         * onTransactComplete(), implement when needed
+         *
+         */
     }
 
     async onLoginComplete(): Promise<void> {
-        return Promise.resolve()
+        /**
+         *
+         * onLoginComplete(), implement when needed
+         *
+         */
     }
 
     async onSignComplete(): Promise<void> {
-        return Promise.resolve()
+        /**
+         *
+         * onSignComplete(), implement when needed
+         *
+         */
     }
 
     async onBroadcastComplete(): Promise<void> {
-        return Promise.resolve()
+        /**
+         *
+         * onBroadcastComplete(), implement when needed
+         *
+         */
     }
 
     async onSign(): Promise<void> {
-        return Promise.resolve()
+        /**
+         *
+         * onSign, implement when needed
+         *
+         */
     }
 
     async onBroadcast(): Promise<void> {
-        return Promise.resolve()
+        /**
+         *
+         * onBroadcast(), implement when needed
+         *
+         */
     }
 
     translate(): string {
