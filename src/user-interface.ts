@@ -1,4 +1,4 @@
-import {Checksum256, PermissionLevel} from '@greymass/eosio'
+import {Checksum256, PermissionLevel} from '@wharfkit/session'
 import {
     cancelable,
     Cancelable,
