@@ -1,7 +1,7 @@
 {
     "name": "@wharfkit/console-renderer",
     "description": "A template to create user interfaces for use with @wharfkit/session.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "homepage": "https://github.com/wharfkit/ui-plugin-template",
     "license": "BSD-3-Clause",
     "main": "lib/console-renderer.js",
@@ -12,6 +12,9 @@
         "lib/*",
         "src/*"
     ],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "prepare": "make"
     },
